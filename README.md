@@ -116,16 +116,6 @@ This project can be deployed to various platforms:
 4. Set main file path to: `streamlit_app.py`
 5. Click "Deploy"
 
-### Heroku
-1. Install Heroku CLI
-2. Run: `heroku create your-app-name`
-3. Run: `git push heroku main`
-
-### Railway
-1. Go to [railway.app](https://railway.app)
-2. Connect your GitHub repository
-3. Deploy automatically
-
 ## Future Improvements
 
 - Explore more advanced neural network architectures (e.g., LSTM for sequence data).
@@ -136,9 +126,9 @@ This project can be deployed to various platforms:
 
 ## Contact
 
-- [Twitter](https://twitter.com/arindal_17)
-- [GitHub](https://github.com/arindal1)
-- [LinkedIn](https://www.linkedin.com/in/arindalchar)
+
+- [GitHub](https://github.com/manas1148)
+- [LinkedIn](https://www.linkedin.com/in/manas-rai-kaushik-1b4200242/)
 
 ## License
 
