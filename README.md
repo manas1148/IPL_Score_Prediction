@@ -10,7 +10,7 @@ This repository contains a machine learning project for predicting IPL (Indian P
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](YOUR_DEPLOY_LINK_HERE)
 
-**Deploy Link:** [Add your deployment URL here]
+**Deploy Link:** [https://iplscoreprediction-abwejkv7mvhyegsuzbwoam.streamlit.app/]
 
 *Replace `YOUR_DEPLOY_LINK_HERE` with your actual Streamlit Cloud deployment URL*
 
