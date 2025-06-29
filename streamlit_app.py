@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import keras
 import tensorflow as tf
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 import joblib
@@ -30,11 +29,11 @@ scaler = MinMaxScaler()
 X_scaled = scaler.fit_transform(X)
 
 # Define and train the model (or load pre-trained model if available)
-model = keras.Sequential([
-    keras.layers.Input(shape=(X_scaled.shape[1],)),
-    keras.layers.Dense(512, activation='relu'),
-    keras.layers.Dense(216, activation='relu'),
-    keras.layers.Dense(1, activation='linear')
+model = tf.keras.Sequential([
+    tf.keras.layers.Input(shape=(X_scaled.shape[1],)),
+    tf.keras.layers.Dense(512, activation='relu'),
+    tf.keras.layers.Dense(216, activation='relu'),
+    tf.keras.layers.Dense(1, activation='linear')
 ])
 huber_loss = tf.keras.losses.Huber(delta=1.0)
 model.compile(optimizer='adam', loss=huber_loss)
