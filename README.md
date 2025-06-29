@@ -82,7 +82,7 @@ To run the project locally, follow these steps:
 
 1. Clone the repository:
    ```
-   git clone https://github.com/arindal/IPL-score-pred.git
+   https://github.com/manas1148/IPL_Score_Prediction.git
    cd IPL-score-pred
    ```
 
