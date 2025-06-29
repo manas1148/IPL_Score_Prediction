@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import tensorflow as tf
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 import joblib
 
@@ -28,35 +28,92 @@ X['bowler'] = bowler_encoder.fit_transform(X['bowler'])
 scaler = MinMaxScaler()
 X_scaled = scaler.fit_transform(X)
 
-# Define and train the model (or load pre-trained model if available)
-model = tf.keras.Sequential([
-    tf.keras.layers.Input(shape=(X_scaled.shape[1],)),
-    tf.keras.layers.Dense(512, activation='relu'),
-    tf.keras.layers.Dense(216, activation='relu'),
-    tf.keras.layers.Dense(1, activation='linear')
-])
-huber_loss = tf.keras.losses.Huber(delta=1.0)
-model.compile(optimizer='adam', loss=huber_loss)
-model.fit(X_scaled, y, epochs=10, batch_size=64, verbose=0)  # Fewer epochs for demo
+# Define and train the model using Random Forest
+model = RandomForestRegressor(n_estimators=100, random_state=42, n_jobs=-1)
+model.fit(X_scaled, y)
 
 # Streamlit UI
 st.title('IPL Score Predictor')
+st.markdown("---")
 
-venue = st.selectbox('Select Venue', df['venue'].unique())
-batting_team = st.selectbox('Select Batting Team', df['bat_team'].unique())
-bowling_team = st.selectbox('Select Bowling Team', df['bowl_team'].unique())
-striker = st.selectbox('Select Striker', df['batsman'].unique())
-bowler = st.selectbox('Select Bowler', df['bowler'].unique())
+# Add some styling
+st.markdown("""
+<style>
+    .main-header {
+        font-size: 2.5rem;
+        color: #1f77b4;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    .prediction-box {
+        background-color: #f0f2f6;
+        padding: 1rem;
+        border-radius: 10px;
+        border-left: 4px solid #1f77b4;
+    }
+</style>
+""", unsafe_allow_html=True)
 
-if st.button('Predict Score'):
-    input_data = [
-        venue_encoder.transform([venue])[0],
-        batting_team_encoder.transform([batting_team])[0],
-        bowling_team_encoder.transform([bowling_team])[0],
-        striker_encoder.transform([striker])[0],
-        bowler_encoder.transform([bowler])[0]
-    ]
-    input_data = np.array(input_data).reshape(1, -1)
-    input_data = scaler.transform(input_data)
-    predicted_score = int(model.predict(input_data)[0, 0])
-    st.success(f'Predicted Score: {predicted_score}') 
+st.markdown('<h1 class="main-header">🏏 IPL Score Predictor</h1>', unsafe_allow_html=True)
+
+# Create two columns for better layout
+col1, col2 = st.columns(2)
+
+with col1:
+    st.subheader("🏟️ Match Details")
+    venue = st.selectbox('Select Venue', sorted(df['venue'].unique()))
+    batting_team = st.selectbox('Select Batting Team', sorted(df['bat_team'].unique()))
+    bowling_team = st.selectbox('Select Bowling Team', sorted(df['bowl_team'].unique()))
+
+with col2:
+    st.subheader("👥 Player Details")
+    striker = st.selectbox('Select Striker', sorted(df['batsman'].unique()))
+    bowler = st.selectbox('Select Bowler', sorted(df['bowler'].unique()))
+
+st.markdown("---")
+
+if st.button('🎯 Predict Score', type="primary"):
+    with st.spinner('Training model and making prediction...'):
+        # Prepare input data
+        input_data = [
+            venue_encoder.transform([venue])[0],
+            batting_team_encoder.transform([batting_team])[0],
+            bowling_team_encoder.transform([bowling_team])[0],
+            striker_encoder.transform([striker])[0],
+            bowler_encoder.transform([bowler])[0]
+        ]
+        input_data = np.array(input_data).reshape(1, -1)
+        input_data = scaler.transform(input_data)
+        
+        # Make prediction
+        predicted_score = int(model.predict(input_data)[0])
+        
+        # Display result with styling
+        st.markdown(f"""
+        <div class="prediction-box">
+            <h3>🎯 Predicted Score: <span style="color: #1f77b4; font-size: 2rem;">{predicted_score}</span></h3>
+            <p><strong>Venue:</strong> {venue}</p>
+            <p><strong>Batting Team:</strong> {batting_team}</p>
+            <p><strong>Bowling Team:</strong> {bowling_team}</p>
+            <p><strong>Striker:</strong> {striker}</p>
+            <p><strong>Bowler:</strong> {bowler}</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+# Add some information about the model
+st.markdown("---")
+st.subheader("📊 Model Information")
+st.markdown("""
+- **Model Type:** Random Forest Regressor
+- **Features:** Venue, Teams, Players
+- **Training Data:** Historical IPL match data
+- **Accuracy:** Optimized for score prediction
+""")
+
+# Add footer
+st.markdown("---")
+st.markdown("""
+<div style="text-align: center; color: #666;">
+    <p>Built with ❤️ using Streamlit and Machine Learning</p>
+</div>
+""", unsafe_allow_html=True) 
